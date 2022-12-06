@@ -239,7 +239,7 @@ int main(void) {
 	lastX = width / 2;
 	lastY = height / 2;
 
-	theShader.setInt("light.type", 3);
+	theShader.setInt("light.type", 2);
 
 	theShader.setVec3("light.ambient", glm::vec3(.05));
 	theShader.setVec3("light.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
@@ -305,8 +305,8 @@ int main(void) {
 		theShader.use();
 
 		//flashlightstuff
-		theShader.setVec3("light.position", cameraPos);
-		theShader.setVec3("light.direction", cameraFront);
+		/*theShader.setVec3("light.position", cameraPos);
+		theShader.setVec3("light.direction", cameraFront);*/
 
 		//ghetto projection matrix resetting
 		glfwGetFramebufferSize(window, &width, &height);

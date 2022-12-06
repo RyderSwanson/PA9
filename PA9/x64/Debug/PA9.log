@@ -1,24 +1,24 @@
 ﻿  Source.cpp
-E:\PA9\PA9\Source.cpp(153,34): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-E:\PA9\PA9\Source.cpp(239,16): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(240,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(244,50): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\PA9\PA9\Source.cpp(153,34): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\PA9\PA9\Source.cpp(239,16): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\PA9\PA9\Source.cpp(240,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\PA9\PA9\Source.cpp(244,50): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-E:\PA9\PA9\Source.cpp(317,35): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(321,19): warning C4244: 'initializing': conversion from 'time_t' to 'int', possible loss of data
-E:\PA9\PA9\Source.cpp(54,15): warning C4101: 'EBO': unreferenced local variable
-E:\PA9\PA9\Source.cpp(57,15): warning C4101: 'shaderProgram': unreferenced local variable
-E:\PA9\PA9\Source.cpp(56,15): warning C4101: 'fragmentShader': unreferenced local variable
-E:\PA9\PA9\Source.cpp(55,15): warning C4101: 'vertexShader': unreferenced local variable
-E:\PA9\PA9\Source.cpp(376,33): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(376,26): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
-E:\PA9\PA9\Source.cpp(433,11): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(434,11): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(437,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(438,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(439,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(440,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-  PA9.vcxproj -> E:\PA9\x64\Debug\PA9.exe
+C:\PA9\PA9\Source.cpp(317,35): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\PA9\PA9\Source.cpp(321,19): warning C4244: 'initializing': conversion from 'time_t' to 'int', possible loss of data
+C:\PA9\PA9\Source.cpp(54,15): warning C4101: 'EBO': unreferenced local variable
+C:\PA9\PA9\Source.cpp(57,15): warning C4101: 'shaderProgram': unreferenced local variable
+C:\PA9\PA9\Source.cpp(56,15): warning C4101: 'fragmentShader': unreferenced local variable
+C:\PA9\PA9\Source.cpp(55,15): warning C4101: 'vertexShader': unreferenced local variable
+C:\PA9\PA9\Source.cpp(376,33): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\PA9\PA9\Source.cpp(376,26): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
+C:\PA9\PA9\Source.cpp(433,11): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\PA9\PA9\Source.cpp(434,11): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\PA9\PA9\Source.cpp(437,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\PA9\PA9\Source.cpp(438,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\PA9\PA9\Source.cpp(439,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\PA9\PA9\Source.cpp(440,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  PA9.vcxproj -> C:\PA9\x64\Debug\PA9.exe
