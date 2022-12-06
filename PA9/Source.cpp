@@ -189,8 +189,9 @@ int main(void) {
 
 	//loading textures
 
-	unsigned int diffuse = loadTexture("textures/v9.png");
-	unsigned int specular = loadTexture("textures/spec.png");
+	unsigned int diffuse = loadTexture("textures/MetalSiding002_COL_3K.png");
+	unsigned int specular = loadTexture("textures/MetalSiding002_REFL_3K.png");
+	unsigned int normal = loadTexture("textures/MetalSiding002_NRM_3K.png");
 	
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, diffuse);
@@ -198,8 +199,12 @@ int main(void) {
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, specular);
 
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, normal);
+
 	theShader.setInt("material.diffuse", 0);
 	theShader.setInt("material.specular", 1);
+	theShader.setInt("material.normal", 2);
 
 	//rotation
 
@@ -238,23 +243,20 @@ int main(void) {
 
 	theShader.setVec3("light.ambient", glm::vec3(.05));
 	theShader.setVec3("light.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
-	theShader.setVec3("light.specular", glm::vec3(1.0f));
+	theShader.setVec3("light.specular", glm::vec3(10.0f));
 	theShader.setVec3("light.direction", glm::vec3(0.0f, -1.0f, 0.0f));
 	theShader.setVec3("light.position", lightPos);
 
-	theShader.setFloat("light.constant", 1.0f);
+	theShader.setFloat("light.constant", 0.5f);
 	theShader.setFloat("light.linear", 0.09f);
 	theShader.setFloat("light.quadratic", 0.032f);
 
 
-	theShader.setVec3("material.ambient", 1.0f, 0.5f, 0.71f);
-	theShader.setVec3("material.diffuse", 1.0f, 0.5f, 0.71f);
-	theShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
-	theShader.setFloat("material.shininess", 32.0f);
+	theShader.setFloat("material.shininess", 128.0f);
 
 	//flashlight stuff
-	theShader.setVec3("light.position", cameraPos);
-	theShader.setVec3("light.direction", cameraFront);
+	//theShader.setVec3("light.position", cameraPos);
+	//theShader.setVec3("light.direction", cameraFront);
 	theShader.setFloat("light.cutOff", glm::cos(glm::radians(25.5f)));
 	theShader.setFloat("light.outerCutOff", glm::cos(glm::radians(30.5f)));
 
@@ -301,9 +303,11 @@ int main(void) {
 		getInput(window);
 
 		theShader.use();
+
 		//flashlightstuff
 		theShader.setVec3("light.position", cameraPos);
 		theShader.setVec3("light.direction", cameraFront);
+
 		//ghetto projection matrix resetting
 		glfwGetFramebufferSize(window, &width, &height);
 		setProjection(theShader, width, height);
@@ -317,9 +321,9 @@ int main(void) {
 		int currentTime = time(NULL);
 
 		//spin about the y
-		testTrans = glm::rotate(testTrans, glm::radians(50 * deltaTime * ((sin(glfwGetTime() * 2.5231) + 1) * (sin(glfwGetTime() * 8.123f) + 1) * (sin(glfwGetTime() * 1.723f) + 1))), glm::dvec3(0.0, 1.0, 0.0));
-		testTrans = glm::rotate(testTrans, glm::radians(50 * deltaTime * ((sin(glfwGetTime() * 7.5231) + 1) * (sin(glfwGetTime() * 1.123f) + 1) * (sin(glfwGetTime() * 3.723f) + 1))), glm::dvec3(0.0, 0.0, 1.0));
-		testTrans = glm::rotate(testTrans, glm::radians(50 * deltaTime * ((sin(glfwGetTime() * 1.5231) + 1) * (sin(glfwGetTime() * 5.123f) + 1) * (sin(glfwGetTime() * 6.723f) + 1))), glm::dvec3(1.0, 0.0, 0.0));
+		//testTrans = glm::rotate(testTrans, 0.1 * glm::radians(10 * deltaTime * ((sin(glfwGetTime() * 2.5231) + 1) * (sin(glfwGetTime() * 8.123f) + 1) * (sin(glfwGetTime() * 1.723f) + 1))), glm::dvec3(0.0, 1.0, 0.0));
+		//testTrans = glm::rotate(testTrans, 0.1 * glm::radians(10 * deltaTime * ((sin(glfwGetTime() * 7.5231) + 1) * (sin(glfwGetTime() * 1.123f) + 1) * (sin(glfwGetTime() * 3.723f) + 1))), glm::dvec3(0.0, 0.0, 1.0));
+		//testTrans = glm::rotate(testTrans, 0.1 * glm::radians(10 * deltaTime * ((sin(glfwGetTime() * 1.5231) + 1) * (sin(glfwGetTime() * 5.123f) + 1) * (sin(glfwGetTime() * 6.723f) + 1))), glm::dvec3(1.0, 0.0, 0.0));
 		//glm::mat4 testTrans2 = glm::translate(testTrans, glm::vec3(sin(glfwGetTime()), 0.0, 0.0));
 		//theShader.setMat4("testTrans", testTrans);
 
@@ -333,7 +337,7 @@ int main(void) {
 			//model = glm::rotate(model, glm::radians(90.0f), (glm::vec3)glm::dot(glm::normalize(cubePositions[i]), glm::normalize(lightPos)));
 			//model[3] = glm::vec4(glm::normalize(cubePositions[i] - lightPos), 1.0f);
 			float angle = 20.0f * i;
-			model = glm::rotate(model, glm::radians(angle + rotateoff), glm::vec3(1.0f, 0.3f, 0.5f));
+			model = glm::rotate(model, glm::radians(0.1f * (angle + rotateoff)), glm::vec3(1.0f, 0.3f, 0.5f));
 			theShader.setMat4("model", model);
 
 			glDrawArrays(GL_TRIANGLES, 0, 36);
