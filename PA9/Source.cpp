@@ -1,15 +1,8 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <stb_image/stb_image.h>
-#include <stdio.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include <iostream>
-#include <ctime>
+#include "Header.h"
 
 #include "Shader.h"
+
+#include "Model.h"
 
 #define numAvgFrames 60
 
@@ -150,7 +143,7 @@ int main(void) {
 	
 
 	//background color, should be black
-	glClearColor(0.005, 0.0, 0.01, 1);
+	glClearColor(0.005, 0.0, 1.01, 1);
 
 	//vsync
 	glfwSwapInterval(1);
@@ -239,7 +232,7 @@ int main(void) {
 	lastX = width / 2;
 	lastY = height / 2;
 
-	theShader.setInt("light.type", 2);
+	theShader.setInt("light.type", 3);
 
 	theShader.setVec3("light.ambient", glm::vec3(.05));
 	theShader.setVec3("light.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
@@ -285,6 +278,9 @@ int main(void) {
 	
 	int rotateoff = 0;
 
+	//test model loading
+	Model test("E:/Downloads/backpack/backpack.obj");
+
 	//main game loop
 	while (!glfwWindowShouldClose(window)) {
 
@@ -304,9 +300,18 @@ int main(void) {
 
 		theShader.use();
 
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, diffuse);
+
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, specular);
+
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, normal);
+
 		//flashlightstuff
-		/*theShader.setVec3("light.position", cameraPos);
-		theShader.setVec3("light.direction", cameraFront);*/
+		theShader.setVec3("light.position", cameraPos);
+		theShader.setVec3("light.direction", cameraFront);
 
 		//ghetto projection matrix resetting
 		glfwGetFramebufferSize(window, &width, &height);
@@ -342,6 +347,8 @@ int main(void) {
 
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
+
+		test.Draw(theShader);
 
 		//glDrawArrays(GL_TRIANGLES, 0, 36);
 
