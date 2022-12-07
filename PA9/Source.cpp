@@ -299,6 +299,7 @@ int main(void) {
 		getInput(window);
 
 		theShader.use();
+		test.Draw(theShader);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, diffuse);
@@ -348,7 +349,6 @@ int main(void) {
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 
-		test.Draw(theShader);
 
 		//glDrawArrays(GL_TRIANGLES, 0, 36);
 

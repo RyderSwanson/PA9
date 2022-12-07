@@ -1,6 +1,4 @@
-#ifndef SHADER
-#define SHADER
-
+#pragma once
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -16,6 +14,7 @@ class Shader {
 public:
 	unsigned int ID;
 
+	Shader() {}
 	Shader(const char* vertexPath, const char* fragmentPath);
 
 	void use();
@@ -30,4 +29,3 @@ public:
 
 
 
-#endif

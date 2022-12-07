@@ -1,6 +1,5 @@
 #include "Shader.h"
 
-
 Shader::Shader(const char* vertexPath, const char* fragmentPath) {
 	//load frag and vert from files
 	std::string vertexCode;
