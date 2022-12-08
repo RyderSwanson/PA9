@@ -1,30 +1,20 @@
-﻿  Mesh.cpp
-E:\PA9\PA9\Mesh.cpp(60,68): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-  Model.cpp
-  Object.cpp
-  Shader.cpp
-  Source.cpp
-E:\PA9\PA9\Source.cpp(146,34): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-E:\PA9\PA9\Source.cpp(232,16): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(233,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(237,50): warning C4305: 'argument': truncation from 'double' to 'T'
-          with
-          [
-              T=float
-          ]
-E:\PA9\PA9\Source.cpp(323,35): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(327,19): warning C4244: 'initializing': conversion from 'time_t' to 'int', possible loss of data
-E:\PA9\PA9\Source.cpp(47,15): warning C4101: 'EBO': unreferenced local variable
-E:\PA9\PA9\Source.cpp(50,15): warning C4101: 'shaderProgram': unreferenced local variable
-E:\PA9\PA9\Source.cpp(49,15): warning C4101: 'fragmentShader': unreferenced local variable
-E:\PA9\PA9\Source.cpp(48,15): warning C4101: 'vertexShader': unreferenced local variable
-E:\PA9\PA9\Source.cpp(383,33): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(383,26): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
-E:\PA9\PA9\Source.cpp(440,11): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(441,11): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(444,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(445,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(446,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(447,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-  Generating Code...
-  PA9.vcxproj -> E:\PA9\x64\Debug\PA9.exe
+﻿  Source.cpp
+C:\PA9\PA9\Source.cpp(87,34): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\PA9\PA9\Source.cpp(113,16): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\PA9\PA9\Source.cpp(114,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\PA9\PA9\Source.cpp(49,15): warning C4101: 'EBO': unreferenced local variable
+C:\PA9\PA9\Source.cpp(52,15): warning C4101: 'shaderProgram': unreferenced local variable
+C:\PA9\PA9\Source.cpp(51,15): warning C4101: 'fragmentShader': unreferenced local variable
+C:\PA9\PA9\Source.cpp(48,15): warning C4101: 'lightVAO': unreferenced local variable
+C:\PA9\PA9\Source.cpp(46,15): warning C4101: 'VBO': unreferenced local variable
+C:\PA9\PA9\Source.cpp(47,15): warning C4101: 'VAO': unreferenced local variable
+C:\PA9\PA9\Source.cpp(50,15): warning C4101: 'vertexShader': unreferenced local variable
+C:\PA9\PA9\Source.cpp(218,33): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\PA9\PA9\Source.cpp(218,26): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
+C:\PA9\PA9\Source.cpp(275,11): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\PA9\PA9\Source.cpp(276,11): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\PA9\PA9\Source.cpp(279,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\PA9\PA9\Source.cpp(280,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\PA9\PA9\Source.cpp(281,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\PA9\PA9\Source.cpp(282,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  PA9.vcxproj -> C:\PA9\x64\Debug\PA9.exe

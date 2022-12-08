@@ -35,6 +35,7 @@ void Mesh::setupMesh() {
 void Mesh::Draw(Shader& shader) {
     unsigned int diffuseNum = 1;
     unsigned int specularNum = 1;
+    unsigned int normalNum = 1;
 
     for (int i = 0; i < textures.size(); i++) { //might need to be unsigned
         glActiveTexture(GL_TEXTURE0 + i);
@@ -46,6 +47,9 @@ void Mesh::Draw(Shader& shader) {
         }
         else if (name == "texture_specular") {
             number = std::to_string(specularNum++);
+        }
+        else if (name == "texture_normal") {
+            number = std::to_string(normalNum++);
         }
 
         shader.setInt(("material." + name + number).c_str(), i);
