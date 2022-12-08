@@ -11,9 +11,17 @@ void Object::draw() {
 	shader->use();
 
 	glm::mat4 modelMat = glm::mat4(1.0f);
-	modelMat = glm::scale(modelMat, scale);
 	modelMat = glm::translate(modelMat, position);
+	modelMat = glm::scale(modelMat, this->scale);
 	shader->setMat4("model", modelMat);
 
 	model->Draw(*shader);
+}
+
+void Object::setPos(glm::vec3 pos) {
+	this->position = pos;
+}
+
+void Object::setScale(glm::vec3 scale) {
+	this->scale = scale;
 }

@@ -167,6 +167,7 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjProto.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="TestFunctions.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="dirLight.fs" />
@@ -181,6 +182,8 @@
     <None Include="shader.vs">
       <FileType>Document</FileType>
     </None>
+    <None Include="skybox.fs" />
+    <None Include="skybox.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

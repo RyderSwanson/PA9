@@ -14,11 +14,23 @@ class Shader {
 public:
 	unsigned int ID;
 
-	Shader() {}
+	/// <summary>
+	/// constructor, handles loading shaders into opengl
+	/// </summary>
+	/// <param name="vertexPath"></param>
+	/// <param name="fragmentPath"></param>
 	Shader(const char* vertexPath, const char* fragmentPath);
 
+	/// <summary>
+	/// set as current shader
+	/// </summary>
 	void use();
 
+	/// <summary>
+	/// All setters for loading variables into graphics card
+	/// </summary>
+	/// <param name="name"></param>
+	/// <param name="value"></param>
 	void setBool(const std::string& name, bool value) const;
 	void setInt(const std::string& name, int value) const;
 	void setFloat(const std::string& name, float value) const;

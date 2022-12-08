@@ -1,3 +1,7 @@
+//Authors: Ryder Swanson, Natalie Simkins, Caden Guffin
+//Date: 11/30/2022
+//Description: A first person horror game set in a forest
+
 #include "Header.h"
 
 #include "Shader.h"
@@ -5,6 +9,8 @@
 #include "Model.h"
 
 #include "Object.h"
+
+#include "TestFunctions.h"
 
 #define numAvgFrames 60
 
@@ -29,20 +35,94 @@ glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
-glm::vec3 lightPos = glm::vec3(1, 8, 1);
+glm::vec3 lightPos = glm::vec3(1, 2, 1);
 
+float playerY = -1;
 
-//using namespace std;
+/// <summary>
+/// callback for window size using glfw
+/// </summary>
+/// <param name="window"></param>
+/// <param name="width"></param>
+/// <param name="height"></param>
 void glfwFrameBufferSizeCallback(GLFWwindow* window, int width, int height);
-void getInput(GLFWwindow* window);
+
+/// <summary>
+/// get inputs for movement and abilities, also handles jumping physics
+/// </summary>
+/// <param name="window"></param>
+/// <param name="shader"></param>
+/// <param name="fov"></param>
+void getInput(GLFWwindow* window, Shader shader, float& fov);
+
+/// <summary>
+/// Load a texture into opengl (no longer used)
+/// </summary>
+/// <param name="filePath"></param>
+/// <returns></returns>
 unsigned int loadTexture(const char* filePath);
-void setProjection(Shader theShader, int width, int height);
+
+/// <summary>
+/// create and set the projection matrix for a shader
+/// </summary>
+/// <param name="theShader"></param>
+/// <param name="width"></param>
+/// <param name="height"></param>
+/// <param name="fov"></param>
+void setProjection(Shader theShader, int width, int height, float fov);
+
+/// <summary>
+/// callback for mouse movements using glfw
+/// </summary>
+/// <param name="window"></param>
+/// <param name="xpos"></param>
+/// <param name="ypos"></param>
 void mouseCallback(GLFWwindow* window, double xpos, double ypos);
+
+/// <summary>
+/// callback for keypresses using glfw
+/// </summary>
+/// <param name="window"></param>
+/// <param name="key"></param>
+/// <param name="scancode"></param>
+/// <param name="action"></param>
+/// <param name="mods"></param>
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
+/// <summary>
+/// create the glfw opengl window instance
+/// </summary>
+/// <param name="width"></param>
+/// <param name="height"></param>
+/// <param name="name"></param>
+/// <param name="fullscreen"></param>
+/// <returns></returns>
 GLFWwindow* createWindow(int width, int height, const char* name, int fullscreen);
+
+/// <summary>
+/// calculate fps and display to console
+/// </summary>
+/// <param name="deltaTime"></param>
+/// <param name="time"></param>
 void fps(double deltaTime, double time);
 
+/// <summary>
+/// setup light parameters inside shader
+/// </summary>
+/// <param name="shader"></param>
+void setupLights(Shader shader);
+
+/// <summary>
+/// draw trees randomly around map
+/// </summary>
+/// <param name="tree"></param>
+/// <param name="num"></param>
+void drawForest(Object tree, int num);
+
 int main(void) {
+	//test functions object
+	TestFunctions tests;
+
 	unsigned int VBO;
 	unsigned int VAO;
 	unsigned int lightVAO;
@@ -51,8 +131,7 @@ int main(void) {
 	unsigned int fragmentShader;
 	unsigned int shaderProgram;
 
-
-
+	float fov = 90;
 
 	std::cout << "***" << std::endl;
 
@@ -68,7 +147,6 @@ int main(void) {
 	//creating a window object
 	GLFWwindow* window = createWindow(600, 600, "PA9", 0);
 
-
 	//turn on glad (so we can use opengl)
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
@@ -76,9 +154,10 @@ int main(void) {
 		return -1;
 	}
 
-	//setting opengl viewport size
 	Shader theShader("dirLight.vs", "dirLight.fs");
 	Shader lightingShader("lightingShader.vs", "lightingShader.fs");
+	Shader skyboxShader("skybox.vs", "skybox.fs");
+	//setting opengl viewport size
 	glViewport(0, 0, 600, 600);
 
 	
@@ -104,7 +183,7 @@ int main(void) {
 	theShader.setMat4("view", view);
 
 	glfwGetFramebufferSize(window, &width, &height);
-	setProjection(theShader, width, height);
+	setProjection(theShader, width, height, fov);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -113,28 +192,9 @@ int main(void) {
 	lastX = width / 2;
 	lastY = height / 2;
 
-	theShader.setInt("light.type", 0);
-
-	theShader.setVec3("light.ambient", glm::vec3(1));
-	theShader.setVec3("light.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
-	theShader.setVec3("light.specular", glm::vec3(1.0f));
-	theShader.setVec3("light.direction", glm::vec3(0.0f, -1.0f, 0.0f));
-	theShader.setVec3("light.position", lightPos);
-
-	theShader.setFloat("light.constant", 0.01f);
-	theShader.setFloat("light.linear", 0.09f);
-	theShader.setFloat("light.quadratic", 0.032f);
-
+	setupLights(theShader);
 
 	theShader.setFloat("material.shininess", 32.0f);
-
-	//flashlight stuff
-	//theShader.setVec3("light.position", cameraPos);
-	//theShader.setVec3("light.direction", cameraFront);
-	theShader.setFloat("light.cutOff", glm::cos(glm::radians(25.5f)));
-	theShader.setFloat("light.outerCutOff", glm::cos(glm::radians(30.5f)));
-
-
 	theShader.setVec3("viewPos", cameraPos);
 
 
@@ -143,23 +203,44 @@ int main(void) {
 
 	lightingShader.setMat4("model", model);
 	lightingShader.setMat4("view", view);
-	setProjection(lightingShader, width, height);
+	setProjection(lightingShader, width, height, fov);
 	lightingShader.setVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
 	lightingShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 	
-	//test model loading
-	Model test("Assets/backpack/backpack.obj");
-	Object obj(theShader, test, glm::vec3(0, 0, 0), glm::vec3(1,1,1));
+	//skybox shader setup
+	skyboxShader.use();
 
-	//Model icoModel("Assets/ico/ico.obj");
-	//Object ico(theShader, icoModel, glm::vec3(3, 0, 0), glm::vec3(1, 1, 1));
+	skyboxShader.setMat4("model", model);
+	skyboxShader.setMat4("view", view);
+	setProjection(skyboxShader, width, height, fov);
+	
+	//test model loading
+	//Model test("Assets/backpack/backpack.obj");
+	//Object obj(theShader, test, glm::vec3(0, 0, 0), glm::vec3(1,1,1));
+
+	Model icoModel("Assets/ico/ico.obj");
+	Object ico(theShader, icoModel, glm::vec3(3, 0, 0), glm::vec3(1, 1, 1));
+
+	Model groundModel("Assets/ground/ground.obj");
+	Object ground(theShader, groundModel, glm::vec3(0, -2, 0), glm::vec3(1));
+
+	Model treeModel("Assets/tree/tree.obj");
+	Object tree(theShader, treeModel, glm::vec3(0, -2, 0), glm::vec3(1));
+
+	Model buildingModel("Assets/building/building.obj");
+	Object building(theShader, buildingModel, glm::vec3(-10, -2, 10), glm::vec3(1.0f));
 
 	//light cube
 	Model cubeModel("Assets/cube/cube.obj");
-	Object cube(lightingShader, cubeModel, lightPos, glm::vec3(0.3f));
+	Object cube(lightingShader, cubeModel, lightPos, glm::vec3(0.1f));
+
+	//skybox
+	Model skyboxModel("Assets/skybox/skybox.obj");
+	Object skybox(skyboxShader, skyboxModel, glm::vec3(0, -2, 0), glm::vec3(500));
 
 	//main game loop
 	while (!glfwWindowShouldClose(window)) {
+		//tests.testCollision(playerY);
 
 		currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
@@ -168,7 +249,7 @@ int main(void) {
 		fps(deltaTime, currentFrame);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		getInput(window);
+		getInput(window, theShader, fov);
 
 		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
@@ -176,26 +257,42 @@ int main(void) {
 
 
 		//flashlightstuff
-		//theShader.setVec3("light.position", cameraPos);
-		//theShader.setVec3("light.direction", cameraFront);
+		theShader.setVec3("flashLight.position", cameraPos);
+		theShader.setVec3("flashLight.direction", cameraFront);
 
 		//ghetto projection matrix resetting for full screen
 		glfwGetFramebufferSize(window, &width, &height);
-		setProjection(theShader, width, height);
+		setProjection(theShader, width, height, fov);
 
 		theShader.setMat4("view", view);
 		theShader.setVec3("viewPos", cameraPos);
 
 		lightingShader.use();
-		setProjection(lightingShader, width, height);
+		setProjection(lightingShader, width, height, fov);
+		//tests.testProjectionMatrix(lightingShader);
 		lightingShader.setMat4("view", view);
+
+		//skybox
+		view = glm::lookAt(glm::vec3(0, -1, 0) , glm::vec3(0,-1,0) + cameraFront, cameraUp);
+		skyboxShader.use();
+		setProjection(skyboxShader, width, height, fov);
+		skyboxShader.setMat4("view", view);
 
 		//int currentTime = time(NULL);
 
-		obj.draw();
-		//ico.draw();
+		//obj.draw();
+		skybox.draw();
+		ico.draw();
 		cube.draw();
+		ground.draw();
+		building.draw();
+		drawForest(tree, 300);
 
+		////test of projection
+		//tests.testProjectionMatrix(theShader);
+		//ico.draw();
+
+		//tests.testFlashLight(theShader);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -210,26 +307,98 @@ void glfwFrameBufferSizeCallback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
 }
 
-void getInput(GLFWwindow* window) {
+void getInput(GLFWwindow* window, Shader shader, float& fov) {
+	static float yVel = 0;
+	//key detection
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
 	}
 
-	const float cameraSpeed = 2.5f * deltaTime;
+	//walking
+	static float cameraSpeed = 2.5f * deltaTime;
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		cameraPos += cameraSpeed * cameraFront;
+		glm::vec3 direction(cameraFront.x, 0, cameraFront.z);
+		cameraPos += cameraSpeed * glm::normalize(direction);
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		cameraPos -= cameraSpeed * cameraFront;
+		glm::vec3 direction(cameraFront.x, 0, cameraFront.z);
+		cameraPos -= cameraSpeed * glm::normalize(direction);
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+		glm::vec3 direction(cameraFront.x, 0, cameraFront.z);
+		direction = glm::normalize(glm::cross(direction, cameraUp));
+		cameraPos -= cameraSpeed * direction;
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+		glm::vec3 direction(cameraFront.x, 0, cameraFront.z);
+		direction = glm::normalize(glm::cross(direction, cameraUp));
+		cameraPos += cameraSpeed * direction;
 	}
 
+	//sprinting
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+		cameraSpeed = 4.0f * deltaTime;
+		if (fov < 100) {
+			fov++;
+		}
+	}
+	else {
+		cameraSpeed = 2.5f * deltaTime;
+		if (fov > 90) {
+			fov--;
+		}
+	}
+
+	//flashlight toggle
+	static int fKeyPressed = 0;
+	static int flashLightOn = 1;
+	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS && fKeyPressed == 0) {
+		fKeyPressed = 1;
+		if (flashLightOn) {
+			shader.setVec3("flashLight.diffuse", glm::vec3(0));
+			shader.setVec3("flashLight.specular", glm::vec3(0));
+
+			flashLightOn = 0;
+
+		}
+		else {
+			shader.setVec3("flashLight.diffuse", glm::vec3(1));
+			shader.setVec3("flashLight.specular", glm::vec3(1));
+
+			flashLightOn = 1;
+
+		}
+	}
+	else if (glfwGetKey(window, GLFW_KEY_F) != GLFW_PRESS && fKeyPressed == 1) {
+		fKeyPressed = 0;
+	}
 	
+	//player jumping
+	static int spacePressed = 0;
+	static int inAir = 0;
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && spacePressed == 0) {
+		spacePressed = 1;
+		if (!inAir) {
+			yVel = 5;
+
+			inAir = 1;
+		}
+	}
+	else if (glfwGetKey(window, GLFW_KEY_SPACE) != GLFW_PRESS && spacePressed == 1) {
+		spacePressed = 0;
+	}
+
+	playerY += yVel * deltaTime;
+	if (playerY <= -1) {
+		yVel = 0;
+		playerY = -1;
+
+		inAir = 0;
+	}
+	else {
+		yVel -= 15 * deltaTime;
+	}
+	cameraPos.y = playerY;
 }
 
 unsigned int loadTexture(const char* filePath) {
@@ -260,9 +429,9 @@ unsigned int loadTexture(const char* filePath) {
 	return texture;
 }
 
-void setProjection(Shader theShader, int width, int height) {
+void setProjection(Shader theShader, int width, int height, float fov) {
 	glm::mat4 projection;
-	projection = glm::perspective(glm::radians(90.0f), (float)width / (float)height, 0.1f, 100.0f);
+	projection = glm::perspective(glm::radians(fov), (float)width / (float)height, 0.1f, 1000.0f);
 
 	theShader.setMat4("projection", projection);
 
@@ -335,6 +504,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			fullscreen = 0;
 		}
 	}
+
 }
 
 GLFWwindow* createWindow(int width, int height, const char* name, int fullscreen) {
@@ -391,4 +561,51 @@ void fps(double deltaTime, double time) {
 	//}
 	//std::cout << std::endl;
 
+}
+
+void setupLights(Shader shader) {
+
+	//dirlight
+	shader.setVec3("dirLight.direction", glm::vec3(0.0f, -1.0f, 0.0f));
+	shader.setVec3("dirLight.ambient", glm::vec3(0.1f));
+	shader.setVec3("dirLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
+	shader.setVec3("dirLight.specular", glm::vec3(1.0f));
+
+	//point light(s)
+	shader.setVec3("pointLights[0].position", lightPos);
+
+	shader.setFloat("pointLights[0].constant", 1.0f);
+	shader.setFloat("pointLights[0].linear", 0.09f);
+	shader.setFloat("pointLights[0].quadratic", 0.032f);
+
+	shader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+	shader.setVec3("pointLights[0].diffuse", glm::vec3(1));
+	shader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+	
+	//flashlight
+	shader.setVec3("flashLight.ambient", 0.05f, 0.05f, 0.05f);
+	shader.setVec3("flashLight.diffuse", glm::vec3(1));
+	shader.setVec3("flashLight.specular", 1.0f, 1.0f, 1.0f);
+
+	shader.setFloat("flashLight.constant", 1.0f);
+	shader.setFloat("flashLight.linear", 0.09f);
+	shader.setFloat("flashLight.quadratic", 0.032f);
+	
+	shader.setFloat("flashLight.cutOff", glm::cos(glm::radians(25.5f)));
+	shader.setFloat("flashLight.outerCutOff", glm::cos(glm::radians(30.5f)));
+}	
+
+void drawForest(Object tree, int num) {
+	int xoff = 0;
+	int zoff = 0;
+	srand(10);
+
+	for (int i = 0; i < num; i++) {
+		//glm::vec3 curPos(i*2 * glm::cos(glm::log(i) * 5), -2, i/1.0 * glm::sin(glm::log(i) * 5));
+		glm::vec3 curPos(rand() % 100 - 50, -2, rand() % 100 - 50);
+		tree.setPos(curPos);
+		glm::vec3 randScale(((rand() % 1000) / 500.0) + .5, ((rand() % 1000) / 500.0) + .5, ((rand() % 1000) / 500.0) + .5);
+		tree.setScale(randScale);
+		tree.draw();
+	}
 }
