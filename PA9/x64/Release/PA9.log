@@ -1,0 +1,36 @@
+﻿  glad.c
+  Mesh.cpp
+E:\PA9\PA9\Mesh.cpp(64,68): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+  Model.cpp
+  Object.cpp
+  Shader.cpp
+  Source.cpp
+E:\PA9\PA9\TestFunctions.h(2,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+E:\PA9\PA9\Source.cpp(166,34): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+E:\PA9\PA9\Source.cpp(192,16): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(193,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(129,15): warning C4101: 'EBO': unreferenced local variable
+E:\PA9\PA9\Source.cpp(132,15): warning C4101: 'shaderProgram': unreferenced local variable
+E:\PA9\PA9\Source.cpp(131,15): warning C4101: 'fragmentShader': unreferenced local variable
+E:\PA9\PA9\Source.cpp(124,16): warning C4101: 'tests': unreferenced local variable
+E:\PA9\PA9\Source.cpp(128,15): warning C4101: 'lightVAO': unreferenced local variable
+E:\PA9\PA9\Source.cpp(126,15): warning C4101: 'VBO': unreferenced local variable
+E:\PA9\PA9\Source.cpp(127,15): warning C4101: 'VAO': unreferenced local variable
+E:\PA9\PA9\Source.cpp(130,15): warning C4101: 'vertexShader': unreferenced local variable
+E:\PA9\PA9\Source.cpp(318,27): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(340,22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(346,22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(391,18): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(399,14): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(444,11): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(445,11): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(448,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(449,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(450,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(451,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  stb_image.cpp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 806 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  PA9.vcxproj -> E:\PA9\x64\Release\PA9.exe
