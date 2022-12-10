@@ -1,10 +1,10 @@
 # PA9
 Horror game set in a forest
 
-#Gameplay:
+## Gameplay:
 You must collect as many lights as you can while avoiding capture.
 
-#Keys:
+## Keys:
 WASD = directional movement
 Space = jump
 Shift = sprint
