@@ -154,9 +154,9 @@ int main(void) {
 		return -1;
 	}
 
-	Shader theShader("dirLight.vs", "dirLight.fs");
-	Shader lightingShader("lightingShader.vs", "lightingShader.fs");
-	Shader skyboxShader("skybox.vs", "skybox.fs");
+	Shader theShader("Shaders/dirLight.vs", "Shaders/dirLight.fs");
+	Shader lightingShader("Shaders/lightingShader.vs", "Shaders/lightingShader.fs");
+	Shader skyboxShader("Shaders/skybox.vs", "Shaders/skybox.fs");
 	//setting opengl viewport size
 	glViewport(0, 0, 600, 600);
 
@@ -286,7 +286,7 @@ int main(void) {
 		cube.draw();
 		ground.draw();
 		building.draw();
-		drawForest(tree, 300);
+		drawForest(tree, 500);
 
 		////test of projection
 		//tests.testProjectionMatrix(theShader);
@@ -339,13 +339,19 @@ void getInput(GLFWwindow* window, Shader shader, float& fov) {
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
 		cameraSpeed = 4.0f * deltaTime;
 		if (fov < 100) {
-			fov++;
+			fov += 40 * deltaTime;
+		}
+		if (fov >= 100) {
+			fov = 100;
 		}
 	}
 	else {
 		cameraSpeed = 2.5f * deltaTime;
 		if (fov > 90) {
-			fov--;
+			fov -= 40 * deltaTime;
+		}
+		if (fov <= 90) {
+			fov = 90;
 		}
 	}
 

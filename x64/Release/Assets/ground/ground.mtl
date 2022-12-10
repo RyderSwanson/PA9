@@ -10,6 +10,6 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-norm Concrete18_NRM_3K.jpg
-map_Kd Concrete18_COL_VAR1_3K.jpg
-map_Ks Concrete18_GLOSS_3K.jpg
+norm Ground020_1K_NormalGL.jpg
+map_Kd Ground020_1K_Color.jpg
+map_Ks Ground020_1K_Roughness.jpg

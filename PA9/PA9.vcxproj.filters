@@ -67,34 +67,34 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shader.vs">
+    <None Include="Shaders\dirLight.fs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="shader.fs">
+    <None Include="Shaders\dirLight.vs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="lightingShader.vs">
+    <None Include="Shaders\lightingShader.fs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="lightingShader.fs">
+    <None Include="Shaders\lightingShader.vs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="pointLight.vs">
+    <None Include="Shaders\pointLight.fs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="pointLight.fs">
+    <None Include="Shaders\pointLight.vs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="dirLight.vs">
+    <None Include="Shaders\shader.fs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="dirLight.fs">
+    <None Include="Shaders\shader.vs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="skybox.fs">
+    <None Include="Shaders\skybox.fs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="skybox.vs">
+    <None Include="Shaders\skybox.vs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

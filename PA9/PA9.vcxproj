@@ -170,20 +170,16 @@
     <ClInclude Include="TestFunctions.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="dirLight.fs" />
-    <None Include="dirLight.vs" />
-    <None Include="lightingShader.fs" />
-    <None Include="lightingShader.vs" />
-    <None Include="pointLight.fs" />
-    <None Include="pointLight.vs" />
-    <None Include="shader.fs">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="shader.vs">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="skybox.fs" />
-    <None Include="skybox.vs" />
+    <None Include="Shaders\dirLight.fs" />
+    <None Include="Shaders\dirLight.vs" />
+    <None Include="Shaders\lightingShader.fs" />
+    <None Include="Shaders\lightingShader.vs" />
+    <None Include="Shaders\pointLight.fs" />
+    <None Include="Shaders\pointLight.vs" />
+    <None Include="Shaders\shader.fs" />
+    <None Include="Shaders\shader.vs" />
+    <None Include="Shaders\skybox.fs" />
+    <None Include="Shaders\skybox.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
