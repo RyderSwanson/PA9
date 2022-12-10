@@ -27,11 +27,12 @@ void Monster::checkCollision() {
 }
 
 void Monster::move() {
-	float movex = glm::normalize(playerPos - monster->position).x * 1 * deltaTime;
-	float movez = glm::normalize(playerPos - monster->position).z * 1 * deltaTime;
+	float monstermovespeed = 0.6;
+	float movex = glm::normalize(playerPos - monster->position).x * monstermovespeed * deltaTime;
+	float movez = glm::normalize(playerPos - monster->position).z * monstermovespeed * deltaTime;
 	glm::vec3 move(movex, 0, movez);
-	move *= glm::distance(monster->position, playerPos) / 10 + 1; //increase speed the further away monster is
-	move *= glfwGetTime() / 30 + 1; //moves faster as game progresses
+	move *= glm::distance(monster->position, playerPos) / 20 + 1; //increase speed the further away monster is
+	move *= glfwGetTime() / 20 + 1; //moves faster as game progresses
 	monster->position += move;
 }
 

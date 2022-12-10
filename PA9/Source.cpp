@@ -34,11 +34,11 @@ float lastX, lastY;
 
 glm::vec3 cameraDirection = glm::vec3(0.0f, 0.0f, -1.0f);
 
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
-glm::vec3 lightPos = glm::vec3(1, -1, 1);
+glm::vec3 lightPos = glm::vec3(0, -1, -4);
 
 float playerY = -1;
 int flashLightOn = 1;
@@ -147,7 +147,7 @@ int main(void) {
 
 	std::cout << "***" << std::endl;
 
-	srand(10);
+	srand(13);
 
 	//irrKlang
 	irrklang::ISoundEngine* engine = irrklang::createIrrKlangDevice();
@@ -245,7 +245,7 @@ int main(void) {
 	//Object obj(theShader, test, glm::vec3(0, 0, 0), glm::vec3(1,1,1));
 
 	Model icoModel("Assets/ico/ico.obj");
-	Object ico(&theShader, icoModel, glm::vec3(2, -1, -3), glm::vec3(1, 1, 1));
+	Object ico(&theShader, icoModel, glm::vec3(0, -1.01, -120), glm::vec3(1, 1, 1));
 
 	Model groundModel("Assets/ground/ground.obj");
 	Object ground(&theShader, groundModel, glm::vec3(0, -2, 0), glm::vec3(1));
