@@ -50,6 +50,7 @@ out vec4 FragColor;
 in vec3 Normal;
 in vec3 FragPos;
 in vec2 TexCoords;
+smooth in vec4 ioEyeSpacePosition;
 
 uniform Material material;
 uniform DirLight dirLight;
@@ -63,10 +64,12 @@ uniform vec3 viewPos;
 vec3 CalcDirLight(DirLight light);
 vec3 CalcPointLight(PointLight light);
 vec3 CalcFlashLight(FlashLight light);
+float getFogFactor(float fogCoordinate);
 
 void main() {
 	vec3 result;
-	//result = CalcDirLight(dirLight);
+	vec3 withfog;
+	result = CalcDirLight(dirLight);
 
 	for (int i = 0; i < 1; i++) {
 		result += CalcPointLight(pointLights[i]);
@@ -74,7 +77,10 @@ void main() {
 
 	result += CalcFlashLight(flashLight);
 
-	FragColor = vec4(result, 1.0f);
+	float fogCoordinate = abs(ioEyeSpacePosition.z / ioEyeSpacePosition.w);
+	withfog = mix(result, dirLight.ambient, getFogFactor(fogCoordinate));
+
+	FragColor = vec4(withfog, 1.0f);
 	//FragColor = vec4(vec3(texture(material.texture_normal1, TexCoords)), 1.0);	
 };
 
@@ -115,7 +121,7 @@ vec3 CalcPointLight(PointLight light) {
 	diffuse *= attenuation;
 	specular *= attenuation;
 
-	return (ambient + diffuse + specular);
+	return (diffuse + specular);
 };
 
 vec3 CalcFlashLight(FlashLight light) {
@@ -150,6 +156,22 @@ vec3 CalcFlashLight(FlashLight light) {
 	specular *= intensity;
 
 		
-	return (ambient + diffuse + specular);
+	return (diffuse + specular);
 	//FragColor = vec4(vec3(texture(material.texture_normal1, TexCoords)), 1.0);
 };
+
+float getFogFactor(float fogCoordinate)
+{
+	float result = 0.0;
+	int equation = 2;
+	float density = .07;
+	if(equation == 1) {
+		result = exp(-density * fogCoordinate);
+	}
+	else if(equation == 2) {
+		result = exp(-pow(density * fogCoordinate, 2.0));
+	}
+	
+	result = 1.0 - clamp(result, 0.0, 1.0);
+	return result;
+}

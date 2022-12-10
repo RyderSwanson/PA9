@@ -11,6 +11,8 @@
 
 #include <assimp/scene.h>
 
+#include <irrKlang/irrKlang.h>
+
 #include <iostream>
 #include <ctime>
 

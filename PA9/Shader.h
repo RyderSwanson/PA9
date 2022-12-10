@@ -13,6 +13,8 @@
 class Shader {
 public:
 	unsigned int ID;
+	unsigned int vertex;
+	unsigned int fragment;
 
 	/// <summary>
 	/// constructor, handles loading shaders into opengl

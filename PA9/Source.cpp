@@ -10,6 +10,9 @@
 
 #include "Object.h"
 
+#include "Objective.h"
+#include "Monster.h"
+
 #include "TestFunctions.h"
 
 #define numAvgFrames 60
@@ -35,9 +38,12 @@ glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
-glm::vec3 lightPos = glm::vec3(1, 2, 1);
+glm::vec3 lightPos = glm::vec3(1, -1, 1);
 
 float playerY = -1;
+int flashLightOn = 1;
+float lastflashactivation = 0;
+float nextTurnOff = 5;
 
 /// <summary>
 /// callback for window size using glfw
@@ -53,7 +59,7 @@ void glfwFrameBufferSizeCallback(GLFWwindow* window, int width, int height);
 /// <param name="window"></param>
 /// <param name="shader"></param>
 /// <param name="fov"></param>
-void getInput(GLFWwindow* window, Shader shader, float& fov);
+void getInput(GLFWwindow* window, Shader shader, float& fov, irrklang::ISound* walking);
 
 /// <summary>
 /// Load a texture into opengl (no longer used)
@@ -117,7 +123,11 @@ void setupLights(Shader shader);
 /// </summary>
 /// <param name="tree"></param>
 /// <param name="num"></param>
-void drawForest(Object tree, int num);
+void drawForest(Object& tree, std::vector<glm::vec3>& forest, std::vector<glm::vec3>& forestScale, int num);
+
+void generateForest(std::vector<glm::vec3>& forest, std::vector<glm::vec3>& forestScale);
+
+void updateFlashLight(Shader shader);
 
 int main(void) {
 	//test functions object
@@ -133,7 +143,23 @@ int main(void) {
 
 	float fov = 90;
 
+	std::vector<glm::vec3> forest, forestScale;
+
 	std::cout << "***" << std::endl;
+
+	srand(10);
+
+	//irrKlang
+	irrklang::ISoundEngine* engine = irrklang::createIrrKlangDevice();
+
+	if (!engine) {
+		std::cout << "audio engine failed to load" << std::endl;
+	}
+	irrklang::ISound* walking;
+	walking = engine->play2D("Sounds/walking.wav", true, true);
+	irrklang::ISound* ambient;
+	ambient = engine->play2D("Sounds/ambient.mp3", true, false);
+	
 
 	//stbi
 	stbi_set_flip_vertically_on_load(true);
@@ -166,7 +192,7 @@ int main(void) {
 	glClearColor(0.005, 0.0, 0.01, 1);
 
 	//vsync
-	glfwSwapInterval(1);
+	glfwSwapInterval(0);
 
 
 	//cube
@@ -219,24 +245,29 @@ int main(void) {
 	//Object obj(theShader, test, glm::vec3(0, 0, 0), glm::vec3(1,1,1));
 
 	Model icoModel("Assets/ico/ico.obj");
-	Object ico(theShader, icoModel, glm::vec3(3, 0, 0), glm::vec3(1, 1, 1));
+	Object ico(&theShader, icoModel, glm::vec3(2, -1, -3), glm::vec3(1, 1, 1));
 
 	Model groundModel("Assets/ground/ground.obj");
-	Object ground(theShader, groundModel, glm::vec3(0, -2, 0), glm::vec3(1));
+	Object ground(&theShader, groundModel, glm::vec3(0, -2, 0), glm::vec3(1));
 
 	Model treeModel("Assets/tree/tree.obj");
-	Object tree(theShader, treeModel, glm::vec3(0, -2, 0), glm::vec3(1));
+	Object tree(&theShader, treeModel, glm::vec3(0, -2, 0), glm::vec3(1));
+	generateForest(forest, forestScale);
 
 	Model buildingModel("Assets/building/building.obj");
-	Object building(theShader, buildingModel, glm::vec3(-10, -2, 10), glm::vec3(1.0f));
+	Object building(&theShader, buildingModel, glm::vec3(-10, -2, 10), glm::vec3(1.0f));
 
 	//light cube
 	Model cubeModel("Assets/cube/cube.obj");
-	Object cube(lightingShader, cubeModel, lightPos, glm::vec3(0.1f));
+	Object cube(&lightingShader, cubeModel, lightPos, glm::vec3(0.1f));
 
 	//skybox
 	Model skyboxModel("Assets/skybox/skybox.obj");
-	Object skybox(skyboxShader, skyboxModel, glm::vec3(0, -2, 0), glm::vec3(500));
+	Object skybox(&skyboxShader, skyboxModel, glm::vec3(0, -2, 0), glm::vec3(500));
+
+	//game elements
+	Objective objective(&theShader, &cube, engine, cameraPos);
+	Monster monster(&ico, engine, cameraFront, cameraPos);
 
 	//main game loop
 	while (!glfwWindowShouldClose(window)) {
@@ -249,7 +280,7 @@ int main(void) {
 		fps(deltaTime, currentFrame);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		getInput(window, theShader, fov);
+		getInput(window, theShader, fov, walking);
 
 		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
@@ -281,12 +312,17 @@ int main(void) {
 		//int currentTime = time(NULL);
 
 		//obj.draw();
+		objective.update(cameraPos, deltaTime);
+		monster.update(cameraPos, cameraFront, deltaTime, flashLightOn);
+		updateFlashLight(theShader);
+
+		//draw stuff
 		skybox.draw();
 		ico.draw();
 		cube.draw();
 		ground.draw();
 		building.draw();
-		drawForest(tree, 500);
+		drawForest(tree, forest, forestScale, 800);
 
 		////test of projection
 		//tests.testProjectionMatrix(theShader);
@@ -307,7 +343,7 @@ void glfwFrameBufferSizeCallback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
 }
 
-void getInput(GLFWwindow* window, Shader shader, float& fov) {
+void getInput(GLFWwindow* window, Shader shader, float& fov, irrklang::ISound* walking) {
 	static float yVel = 0;
 	//key detection
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
@@ -316,23 +352,34 @@ void getInput(GLFWwindow* window, Shader shader, float& fov) {
 
 	//walking
 	static float cameraSpeed = 2.5f * deltaTime;
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		glm::vec3 direction(cameraFront.x, 0, cameraFront.z);
-		cameraPos += cameraSpeed * glm::normalize(direction);
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS ||
+		glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS ||
+		glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS ||
+		glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+		walking->setIsPaused(false);
+
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+			glm::vec3 direction(cameraFront.x, 0, cameraFront.z);
+			cameraPos += cameraSpeed * glm::normalize(direction);
+		}
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+			glm::vec3 direction(cameraFront.x, 0, cameraFront.z);
+			cameraPos -= cameraSpeed * glm::normalize(direction);
+		}
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+			glm::vec3 direction(cameraFront.x, 0, cameraFront.z);
+			direction = glm::normalize(glm::cross(direction, cameraUp));
+			cameraPos -= cameraSpeed * direction;
+		}
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+			glm::vec3 direction(cameraFront.x, 0, cameraFront.z);
+			direction = glm::normalize(glm::cross(direction, cameraUp));
+			cameraPos += cameraSpeed * direction;
+		}
+
 	}
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		glm::vec3 direction(cameraFront.x, 0, cameraFront.z);
-		cameraPos -= cameraSpeed * glm::normalize(direction);
-	}
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		glm::vec3 direction(cameraFront.x, 0, cameraFront.z);
-		direction = glm::normalize(glm::cross(direction, cameraUp));
-		cameraPos -= cameraSpeed * direction;
-	}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		glm::vec3 direction(cameraFront.x, 0, cameraFront.z);
-		direction = glm::normalize(glm::cross(direction, cameraUp));
-		cameraPos += cameraSpeed * direction;
+	else {
+		walking->setIsPaused(true);
 	}
 
 	//sprinting
@@ -357,7 +404,7 @@ void getInput(GLFWwindow* window, Shader shader, float& fov) {
 
 	//flashlight toggle
 	static int fKeyPressed = 0;
-	static int flashLightOn = 1;
+	
 	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS && fKeyPressed == 0) {
 		fKeyPressed = 1;
 		if (flashLightOn) {
@@ -368,8 +415,8 @@ void getInput(GLFWwindow* window, Shader shader, float& fov) {
 
 		}
 		else {
-			shader.setVec3("flashLight.diffuse", glm::vec3(1));
-			shader.setVec3("flashLight.specular", glm::vec3(1));
+			shader.setVec3("flashLight.diffuse", glm::vec3(0.8f, 0.7f, 0.4f));
+			shader.setVec3("flashLight.specular", glm::vec3(0.8f, 0.7f, 0.4f));
 
 			flashLightOn = 1;
 
@@ -550,14 +597,14 @@ void fps(double deltaTime, double time) {
 
 	if (timeSec != (int)time) {
 		double avg = 0;
-		std::cout << std::endl;
-		std::cout << "cur: " << frameFps << std::endl;
+		//std::cout << std::endl;
+		//std::cout << "cur: " << frameFps << std::endl;
 
 		for (int i = 0; i < numAvgFrames; i++) {
 			avg += frameTimeBuffer[i];
 		}
 		avg /= numAvgFrames;
-		std::cout << "avg: " << avg << std::endl;
+		//std::cout << "avg: " << avg << std::endl;
 
 		timeSec = (int)time;
 	}
@@ -572,10 +619,11 @@ void fps(double deltaTime, double time) {
 void setupLights(Shader shader) {
 
 	//dirlight
-	shader.setVec3("dirLight.direction", glm::vec3(0.0f, -1.0f, 0.0f));
-	shader.setVec3("dirLight.ambient", glm::vec3(0.1f));
-	shader.setVec3("dirLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
-	shader.setVec3("dirLight.specular", glm::vec3(1.0f));
+	shader.setVec3("dirLight.direction", glm::normalize(glm::vec3(-0.8f, -1.0f, 0.0f)));
+	shader.setVec3("dirLight.ambient", glm::vec3(0.03f));
+
+	shader.setVec3("dirLight.diffuse", glm::vec3(0.03f, 0.03f, 0.04f));
+	shader.setVec3("dirLight.specular", glm::vec3(0.05f));
 
 	//point light(s)
 	shader.setVec3("pointLights[0].position", lightPos);
@@ -585,13 +633,13 @@ void setupLights(Shader shader) {
 	shader.setFloat("pointLights[0].quadratic", 0.032f);
 
 	shader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
-	shader.setVec3("pointLights[0].diffuse", glm::vec3(1));
-	shader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+	shader.setVec3("pointLights[0].diffuse", glm::vec3(0.6f, 0.6f, 0.8f));
+	shader.setVec3("pointLights[0].specular", glm::vec3(0.6f, 0.6f, 0.8f));
 	
 	//flashlight
 	shader.setVec3("flashLight.ambient", 0.05f, 0.05f, 0.05f);
-	shader.setVec3("flashLight.diffuse", glm::vec3(1));
-	shader.setVec3("flashLight.specular", 1.0f, 1.0f, 1.0f);
+	shader.setVec3("flashLight.diffuse", glm::vec3(0.8f, 0.7f, 0.4f));
+	shader.setVec3("flashLight.specular", glm::vec3(0.8f, 0.7f, 0.4f));
 
 	shader.setFloat("flashLight.constant", 1.0f);
 	shader.setFloat("flashLight.linear", 0.09f);
@@ -601,17 +649,37 @@ void setupLights(Shader shader) {
 	shader.setFloat("flashLight.outerCutOff", glm::cos(glm::radians(30.5f)));
 }	
 
-void drawForest(Object tree, int num) {
-	int xoff = 0;
-	int zoff = 0;
-	srand(10);
+void drawForest(Object& tree, std::vector<glm::vec3>& forest, std::vector<glm::vec3>& forestScale, int num) {
 
 	for (int i = 0; i < num; i++) {
 		//glm::vec3 curPos(i*2 * glm::cos(glm::log(i) * 5), -2, i/1.0 * glm::sin(glm::log(i) * 5));
-		glm::vec3 curPos(rand() % 100 - 50, -2, rand() % 100 - 50);
+		/*glm::vec3 curPos(rand() % 100 - 50, -2, rand() % 100 - 50);
 		tree.setPos(curPos);
 		glm::vec3 randScale(((rand() % 1000) / 500.0) + .5, ((rand() % 1000) / 500.0) + .5, ((rand() % 1000) / 500.0) + .5);
-		tree.setScale(randScale);
+		tree.setScale(randScale);*/
+		tree.setPos(forest[i]);
+		tree.setScale(forestScale[i]);
 		tree.draw();
+	}
+}
+
+void generateForest(std::vector<glm::vec3>& forest, std::vector<glm::vec3>& forestScale) {
+	for (int i = 0; i < 3000; i++) {
+		glm::vec3 curPos(rand() % 100 - 50, -2, rand() % 100 - 50);
+		forest.push_back(curPos);
+		glm::vec3 randScale(((rand() % 1000) / 500.0) + .5, ((rand() % 1000) / 500.0) + .5, ((rand() % 1000) / 500.0) + .5);
+		forestScale.push_back(randScale);
+	}
+}
+
+void updateFlashLight(Shader shader) {
+
+	if (glfwGetTime() - lastflashactivation > nextTurnOff) {
+		flashLightOn = 0;
+		shader.use();
+		shader.setVec3("flashLight.diffuse", glm::vec3(0));
+		shader.setVec3("flashLight.specular", glm::vec3(0));
+		lastflashactivation = glfwGetTime();
+		nextTurnOff = rand() % 5 + 2;
 	}
 }

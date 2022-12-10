@@ -7,6 +7,7 @@ layout (location = 2) in vec2 aTexCoords;
 out vec2 TexCoords;
 out vec3 Normal;
 out vec3 FragPos;
+smooth out vec4 ioEyeSpacePosition;
 
 //uniform mat4 testTrans;
 
@@ -23,4 +24,5 @@ void main()
 
 	TexCoords = aTexCoords;
 	gl_Position = projection * view * vec4(FragPos, 1.0f);
+	ioEyeSpacePosition = view * model * vec4(aPos, 1.0);
 };

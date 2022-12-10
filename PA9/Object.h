@@ -12,7 +12,7 @@ public:
 	/// <param name="model"></param>
 	/// <param name="location"></param>
 	/// <param name="scale"></param>
-	Object(Shader& shader, Model& model, glm::vec3 location, glm::vec3 scale);
+	Object(Shader* shader, Model& model, glm::vec3 location, glm::vec3 scale);
 
 	/// <summary>
 	/// setup model matrix and draw object

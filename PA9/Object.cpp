@@ -1,7 +1,7 @@
 #include "Object.h"
 
-Object::Object(Shader& shader, Model& model, glm::vec3 location, glm::vec3 scale) {
-	this->shader = &shader;
+Object::Object(Shader* shader, Model& model, glm::vec3 location, glm::vec3 scale) {
+	this->shader = shader;
 	this->model = &model;
 	this->position = location;
 	this->scale = scale;
