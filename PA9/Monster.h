@@ -15,6 +15,7 @@ public:
 	Object* monster;
 	irrklang::ISoundEngine* engine;
 	irrklang::ISound* sound;
+	irrklang::ISoundEffectControl* fx;
 	glm::vec3 playerPos;
 	glm::vec3 cameraFront;
 };

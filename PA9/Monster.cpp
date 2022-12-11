@@ -4,9 +4,17 @@ Monster::Monster(Object* monster, irrklang::ISoundEngine* engine, glm::vec3 came
 	this->monster = monster;
 	this->playerPos = playerPos;
 	this->engine = engine;
-	sound = engine->play3D("Sounds/metalScrape.mp3", irrklang::vec3df(1,1,1), true, false, true);
-	sound->setMinDistance(irrklang::ik_f32(5));
-	engine->setSoundVolume(2);
+	sound = engine->play3D("Sounds/metalScrape.mp3", irrklang::vec3df(1,1,1), true, false, true, irrklang::ESM_AUTO_DETECT, true);
+	sound->setMinDistance(irrklang::ik_f32(2));
+	fx = sound->getSoundEffectControl();
+	if (!fx) {
+		std::cout << "wrong";
+	}
+	else {
+		fx->enableDistortionSoundEffect(irrklang::ik_f32(0));
+	}
+	//sound->setVolume(irrklang::ik_f32(1000));
+	//engine->setSoundVolume(2);
 	
 	
 }
@@ -23,6 +31,18 @@ int Monster::isLooking() {
 void Monster::checkCollision() {
 	if (glm::distance(monster->position, playerPos) < 0.8) {
 		exit(0);
+	}
+	if (glm::distance(monster->position, playerPos) < 4) {
+		fx->enableDistortionSoundEffect(irrklang::ik_f32(0));
+	}
+	else {
+		float level = -(glm::distance(monster->position, playerPos) * 2 - 4);
+		if (level > -60) {
+			fx->enableDistortionSoundEffect(irrklang::ik_f32(level));
+		}
+		else {
+			fx->enableDistortionSoundEffect(irrklang::ik_f32(-60));
+		}
 	}
 }
 
