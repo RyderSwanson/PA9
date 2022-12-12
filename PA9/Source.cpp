@@ -59,7 +59,7 @@ void glfwFrameBufferSizeCallback(GLFWwindow* window, int width, int height);
 /// <param name="window"></param>
 /// <param name="shader"></param>
 /// <param name="fov"></param>
-void getInput(GLFWwindow* window, Shader shader, float& fov, irrklang::ISound* walking);
+void getInput(GLFWwindow* window, Shader shader, float& fov, irrklang::ISound* walking, float batteryLevel);
 
 /// <summary>
 /// Load a texture into opengl (no longer used)
@@ -127,7 +127,7 @@ void drawForest(Object& tree, std::vector<glm::vec3>& forest, std::vector<glm::v
 
 void generateForest(std::vector<glm::vec3>& forest, std::vector<glm::vec3>& forestScale);
 
-void updateFlashLight(Shader shader);
+void updateFlashLight(Shader shader, Shader guiShader, float& batteryLevel, float deltaTime);
 
 int main(void) {
 	//test functions object
@@ -183,6 +183,7 @@ int main(void) {
 	Shader theShader("Shaders/dirLight.vs", "Shaders/dirLight.fs");
 	Shader lightingShader("Shaders/lightingShader.vs", "Shaders/lightingShader.fs");
 	Shader skyboxShader("Shaders/skybox.vs", "Shaders/skybox.fs");
+	Shader guiShader("Shaders/gui.vs", "Shaders/gui.fs");
 	//setting opengl viewport size
 	glViewport(0, 0, 600, 600);
 
@@ -239,6 +240,13 @@ int main(void) {
 	skyboxShader.setMat4("model", model);
 	skyboxShader.setMat4("view", view);
 	setProjection(skyboxShader, width, height, fov);
+
+	//gui shader setup
+	guiShader.use();
+
+	guiShader.setMat4("model", model);
+	guiShader.setMat4("view", view);
+	setProjection(guiShader, width, height, fov);
 	
 	//test model loading
 	//Model test("Assets/backpack/backpack.obj");
@@ -265,10 +273,15 @@ int main(void) {
 	Model skyboxModel("Assets/skybox/skybox.obj");
 	Object skybox(&skyboxShader, skyboxModel, glm::vec3(0, -2, 0), glm::vec3(500));
 
+	//gui
+	Model guiModel("Assets/gui/gui.obj");
+	Object gui(&guiShader, guiModel, glm::vec3(0, 0, -1), glm::vec3(1));
+
 	//game elements
 	Objective objective(&theShader, &cube, engine, cameraPos);
 	Monster monster(&ico, engine, cameraFront, cameraPos);
 
+	float batteryLevel = 1;
 	//main game loop
 	while (!glfwWindowShouldClose(window)) {
 		//tests.testCollision(playerY);
@@ -280,7 +293,7 @@ int main(void) {
 		fps(deltaTime, currentFrame);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		getInput(window, theShader, fov, walking);
+		getInput(window, theShader, fov, walking, batteryLevel);
 
 		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
@@ -312,17 +325,19 @@ int main(void) {
 		//int currentTime = time(NULL);
 
 		//obj.draw();
-		objective.update(cameraPos, deltaTime);
+		objective.update(cameraPos, batteryLevel, deltaTime);
+		updateFlashLight(theShader, guiShader, batteryLevel, deltaTime);
 		monster.update(cameraPos, cameraFront, deltaTime, flashLightOn);
-		updateFlashLight(theShader);
 
 		//draw stuff
+		gui.draw();
 		skybox.draw();
 		ico.draw();
 		cube.draw();
 		ground.draw();
 		building.draw();
 		drawForest(tree, forest, forestScale, 800);
+
 
 		////test of projection
 		//tests.testProjectionMatrix(theShader);
@@ -343,7 +358,8 @@ void glfwFrameBufferSizeCallback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
 }
 
-void getInput(GLFWwindow* window, Shader shader, float& fov, irrklang::ISound* walking) {
+void getInput(GLFWwindow* window, Shader shader, float& fov, irrklang::ISound* walking, float batteryLevel) {
+	shader.use();
 	static float yVel = 0;
 	//key detection
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
@@ -405,7 +421,7 @@ void getInput(GLFWwindow* window, Shader shader, float& fov, irrklang::ISound* w
 	//flashlight toggle
 	static int fKeyPressed = 0;
 	
-	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS && fKeyPressed == 0) {
+	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS && fKeyPressed == 0 && batteryLevel > 0) {
 		fKeyPressed = 1;
 		if (flashLightOn) {
 			shader.setVec3("flashLight.diffuse", glm::vec3(0));
@@ -650,13 +666,7 @@ void setupLights(Shader shader) {
 }	
 
 void drawForest(Object& tree, std::vector<glm::vec3>& forest, std::vector<glm::vec3>& forestScale, int num) {
-
 	for (int i = 0; i < num; i++) {
-		//glm::vec3 curPos(i*2 * glm::cos(glm::log(i) * 5), -2, i/1.0 * glm::sin(glm::log(i) * 5));
-		/*glm::vec3 curPos(rand() % 100 - 50, -2, rand() % 100 - 50);
-		tree.setPos(curPos);
-		glm::vec3 randScale(((rand() % 1000) / 500.0) + .5, ((rand() % 1000) / 500.0) + .5, ((rand() % 1000) / 500.0) + .5);
-		tree.setScale(randScale);*/
 		tree.setPos(forest[i]);
 		tree.setScale(forestScale[i]);
 		tree.draw();
@@ -672,14 +682,20 @@ void generateForest(std::vector<glm::vec3>& forest, std::vector<glm::vec3>& fore
 	}
 }
 
-void updateFlashLight(Shader shader) {
-
-	if (glfwGetTime() - lastflashactivation > nextTurnOff) {
+void updateFlashLight(Shader shader, Shader guiShader, float& batteryLevel, float deltaTime) {
+	guiShader.use();
+	if (batteryLevel <= 0) {
+		batteryLevel = 0;
 		flashLightOn = 0;
 		shader.use();
 		shader.setVec3("flashLight.diffuse", glm::vec3(0));
 		shader.setVec3("flashLight.specular", glm::vec3(0));
-		lastflashactivation = glfwGetTime();
-		nextTurnOff = rand() % 5 + 2;
 	}
+	else if (flashLightOn) {
+		batteryLevel -= 0.08 * deltaTime;
+	}
+	if (batteryLevel > 1) {
+		batteryLevel = 1;
+	}
+	guiShader.setFloat("batteryLevel", batteryLevel);
 }

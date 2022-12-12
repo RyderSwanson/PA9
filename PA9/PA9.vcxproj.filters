@@ -109,5 +109,11 @@
     <None Include="Shaders\skybox.vs">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Shaders\gui.fs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\gui.vs">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

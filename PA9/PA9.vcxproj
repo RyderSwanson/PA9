@@ -176,6 +176,8 @@
   <ItemGroup>
     <None Include="Shaders\dirLight.fs" />
     <None Include="Shaders\dirLight.vs" />
+    <None Include="Shaders\gui.fs" />
+    <None Include="Shaders\gui.vs" />
     <None Include="Shaders\lightingShader.fs" />
     <None Include="Shaders\lightingShader.vs" />
     <None Include="Shaders\pointLight.fs" />

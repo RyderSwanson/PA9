@@ -7,8 +7,8 @@ public:
 	Objective(Shader* shader, Object* goalObject, irrklang::ISoundEngine* engine, glm::vec3& playerPos);
 
 	void respawn();
-	void checkCollision();
-	void update(glm::vec3& playerPos, double deltaTime);
+	void checkCollision(float& batteryLevel);
+	void update(glm::vec3& playerPos, float& batteryLevel, double deltaTime);
 
 	Shader* shader;
 	Object* goalObject;
