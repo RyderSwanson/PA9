@@ -88,6 +88,10 @@
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir)\Dependencies\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)\Dependencies\Libs;$(LibraryPath)</LibraryPath>
+    <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
+    <CopyLocalProjectReference>true</CopyLocalProjectReference>
+    <CopyLocalDebugSymbols>true</CopyLocalDebugSymbols>
+    <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -140,6 +144,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <GenerateSourceDependencies>true</GenerateSourceDependencies>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -186,6 +191,26 @@
     <None Include="Shaders\shader.vs" />
     <None Include="Shaders\skybox.fs" />
     <None Include="Shaders\skybox.vs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Shaders\\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Sounds\\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="*.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

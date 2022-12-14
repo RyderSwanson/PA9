@@ -129,6 +129,8 @@ void generateForest(std::vector<glm::vec3>& forest, std::vector<glm::vec3>& fore
 
 void updateFlashLight(Shader shader, Shader guiShader, float& batteryLevel, float deltaTime);
 
+void collision(glm::vec3& playerPos, std::vector<glm::vec3> forestPos, int numTrees);
+
 int main(void) {
 	//test functions object
 	TestFunctions tests;
@@ -155,10 +157,6 @@ int main(void) {
 	if (!engine) {
 		std::cout << "audio engine failed to load" << std::endl;
 	}
-	irrklang::ISound* walking;
-	walking = engine->play2D("Sounds/walking.wav", true, true);
-	irrklang::ISound* ambient;
-	ambient = engine->play2D("Sounds/ambient.mp3", true, false);
 	
 
 	//stbi
@@ -262,8 +260,8 @@ int main(void) {
 	Object tree(&theShader, treeModel, glm::vec3(0, -2, 0), glm::vec3(1));
 	generateForest(forest, forestScale);
 
-	Model buildingModel("Assets/building/building.obj");
-	Object building(&theShader, buildingModel, glm::vec3(-10, -2, 10), glm::vec3(1.0f));
+	//Model buildingModel("Assets/building/building.obj");
+	//Object building(&theShader, buildingModel, glm::vec3(-10, -2, 10), glm::vec3(1.0f));
 
 	//light cube
 	Model cubeModel("Assets/cube/cube.obj");
@@ -280,8 +278,15 @@ int main(void) {
 	//game elements
 	Objective objective(&theShader, &cube, engine, cameraPos);
 	Monster monster(&ico, engine, cameraFront, cameraPos);
+	
+	//audio stuff
+	irrklang::ISound* walking;
+	walking = engine->play2D("Sounds/walking.mp3", true, true);
+	irrklang::ISound* ambient;
+	ambient = engine->play2D("Sounds/ambient.mp3", true, false);
 
 	float batteryLevel = 1;
+	int numTrees = 800;
 	//main game loop
 	while (!glfwWindowShouldClose(window)) {
 		//tests.testCollision(playerY);
@@ -294,6 +299,7 @@ int main(void) {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		getInput(window, theShader, fov, walking, batteryLevel);
+		collision(cameraPos, forest, numTrees);
 
 		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
@@ -335,8 +341,8 @@ int main(void) {
 		ico.draw();
 		cube.draw();
 		ground.draw();
-		building.draw();
-		drawForest(tree, forest, forestScale, 800);
+		//building.draw();
+		drawForest(tree, forest, forestScale, numTrees);
 
 
 		////test of projection
@@ -675,9 +681,13 @@ void drawForest(Object& tree, std::vector<glm::vec3>& forest, std::vector<glm::v
 
 void generateForest(std::vector<glm::vec3>& forest, std::vector<glm::vec3>& forestScale) {
 	for (int i = 0; i < 3000; i++) {
-		glm::vec3 curPos(rand() % 100 - 50, -2, rand() % 100 - 50);
+		glm::vec3 curPos(rand() % 10000 - 5000, -2, rand() % 10000 - 5000);
+		curPos /= 100.0f;
+		curPos.y = -2;
 		forest.push_back(curPos);
-		glm::vec3 randScale(((rand() % 1000) / 500.0) + .5, ((rand() % 1000) / 500.0) + .5, ((rand() % 1000) / 500.0) + .5);
+		float width = ((rand() % 1000) / 500.0) + .5;
+		float height = ((rand() % 1000) / 500.0) + .5;
+		glm::vec3 randScale(width, height, width);
 		forestScale.push_back(randScale);
 	}
 }
@@ -698,4 +708,21 @@ void updateFlashLight(Shader shader, Shader guiShader, float& batteryLevel, floa
 		batteryLevel = 1;
 	}
 	guiShader.setFloat("batteryLevel", batteryLevel);
+}
+
+void collision(glm::vec3& playerPos, std::vector<glm::vec3> forestPos, int numTrees) {
+	float radius = 0.4f;
+	for (int i = 0; i < numTrees; i++) {
+		glm::vec2 treePos2d(forestPos[i].x, forestPos[i].z);
+		glm::vec2 playerPos2d(playerPos.x, playerPos.z);
+		if (glm::distance(treePos2d, playerPos2d) < radius) {
+			//std::cout << "test";
+			glm::vec2 direction = playerPos2d - treePos2d;
+			glm::vec2 moveVec = (glm::normalize(direction) * radius) - direction;
+
+
+			playerPos.x += moveVec.x;
+			playerPos.z += moveVec.y;
+		}
+	}
 }

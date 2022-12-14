@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{a08f8dd2-365c-4069-af26-27d6f29350a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{bbd3228a-a74a-43a8-822f-3859efc3bd63}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -80,40 +86,40 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\dirLight.fs">
-      <Filter>Resource Files</Filter>
+      <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\dirLight.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\lightingShader.fs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\lightingShader.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\pointLight.fs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\pointLight.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\shader.fs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\shader.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\skybox.fs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\skybox.vs">
-      <Filter>Resource Files</Filter>
+      <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\gui.fs">
-      <Filter>Resource Files</Filter>
+      <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\gui.vs">
-      <Filter>Resource Files</Filter>
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\lightingShader.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\lightingShader.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\pointLight.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\pointLight.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\shader.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\shader.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\skybox.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\skybox.vs">
+      <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>
