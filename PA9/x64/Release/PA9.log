@@ -3,7 +3,7 @@ E:\PA9\PA9\TestFunctions.h(2,10): warning C4067: unexpected tokens following pre
 E:\PA9\PA9\Source.cpp(191,34): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
 E:\PA9\PA9\Source.cpp(217,16): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
 E:\PA9\PA9\Source.cpp(218,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(335,56): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(336,56): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 E:\PA9\PA9\Source.cpp(141,15): warning C4101: 'EBO': unreferenced local variable
 E:\PA9\PA9\Source.cpp(144,15): warning C4101: 'shaderProgram': unreferenced local variable
 E:\PA9\PA9\Source.cpp(143,15): warning C4101: 'fragmentShader': unreferenced local variable
@@ -12,24 +12,24 @@ E:\PA9\PA9\Source.cpp(140,15): warning C4101: 'lightVAO': unreferenced local var
 E:\PA9\PA9\Source.cpp(138,15): warning C4101: 'VBO': unreferenced local variable
 E:\PA9\PA9\Source.cpp(139,15): warning C4101: 'VAO': unreferenced local variable
 E:\PA9\PA9\Source.cpp(142,15): warning C4101: 'vertexShader': unreferenced local variable
-E:\PA9\PA9\Source.cpp(376,27): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(409,22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(411,14): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(418,22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(420,14): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(466,18): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(474,14): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(519,11): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(520,11): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(523,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(524,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(525,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(526,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(688,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(689,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-E:\PA9\PA9\Source.cpp(705,24): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(382,27): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(415,22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(417,14): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(424,22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(426,14): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(472,18): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(480,14): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(525,11): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(526,11): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(529,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(530,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(531,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(532,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(694,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(695,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+E:\PA9\PA9\Source.cpp(711,24): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
   Generating code
-  1 of 894 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
+  1 of 877 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     9 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
